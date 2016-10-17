@@ -1,0 +1,57 @@
+# name of the app
+APP="rumbl_ec2"
+
+# declaration of the servers and assignment of public DNS
+# one for now
+
+MAIN="ec2-184-72-96-182.compute-1.amazonaws.com"
+#MAIN2=
+#MAIN3=
+
+# specify a user
+
+USER="ubuntu"
+
+# which host do you wnat to build release on?
+
+BUILD_HOST=$MAIN
+BUILD_USER=$USER
+BUILD_AT="/tmp/edeliver/$APP/builds"
+
+# specify the staging host
+# not specifying that for now
+
+#STAGING_HOSTS=
+#STAGING_USER=
+#DELIVER_TO=
+
+# Specify which host(s) the app is going to be deployed to
+# we can add more than one, separated by spaces
+PRODUCTION_HOSTS="$MAIN"
+PRODUCTION_USER=$USER
+DELIVER_TO="/home/ubuntu"
+
+# Point to the vm.args file
+LINK_VM_ARGS="/home/ubuntu/vm.args"
+
+# For Phoenix Projects
+pre_erlang_get_and_update_deps() {
+  local _prod_secret_path="/home/$USER/prod.secret.exs"
+  if [ "$TARGET_MIX_ENV" = "prod" ]; then
+    __sync_remote "
+      ln -sfn '$_prod_secret_path' '$BUILD_AT/config/prod.secret.exs'
+
+      cd '$BUILD_AT'
+
+      mkdir -p priv/static
+
+      mix deps.get
+
+      npm install
+
+      brunch build --production
+
+      APP='$APP' MIX_ENV='$TARGET_MIX_ENV' $MIX_CMD phoenix.digest $SILENCE
+    "
+  fi
+}
