@@ -15,9 +15,9 @@ defmodule RumblEc2.Router do
 
   scope "/", RumblEc2 do
     pipe_through :browser # Use the default browser stack
-    get "/users", UserController, :index
-    get "/users/:id", UserController, :show
+
     get "/", PageController, :index
+    resources "/users", UserController, only: [:index, :show, :new, :create]
   end
 
   # Other scopes may use custom stacks.
