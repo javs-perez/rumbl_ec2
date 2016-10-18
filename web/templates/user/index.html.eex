@@ -4,7 +4,7 @@
   <%= for user <- @users do %>
     <tr>
       <td><b><%= first_name(user) %></b> (<%= user.id %>)</td>
-      <td><b><%= link "View", to: user_path(@conn, :show, user.id) %></b> (<%= user.id %>)</td>
+      <td><%= link "View", to: user_path(@conn, :show, user.id) %></td>
     </tr>
   <% end %>
 </table>
