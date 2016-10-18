@@ -1,6 +1,8 @@
 # name of the app
 APP="rumbl_ec2"
 
+AUTO_VERSION=revision
+
 # declaration of the servers and assignment of public DNS
 # one for now
 
