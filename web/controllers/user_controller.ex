@@ -26,5 +26,6 @@ defmodule RumblEc2.UserController do
         |> redirect(to: user_path(conn, :index))
       {:error, changeset} ->
         render(conn, "new.html", changeset: changeset)
+    end
   end
 end
