@@ -14,8 +14,7 @@ use Mix.Config
 config :rumbl_ec2, RumblEc2.Endpoint,
   http: [port: 8080],
   url: [host: "ec2-184-72-96-182.compute-1.amazonaws.com", port: 80],
-  cache_static_manifest: "priv/static/manifest.json",
-  server: true
+  cache_static_manifest: "priv/static/manifest.json"
 
 # Do not print debug messages in production
 config :logger, level: :info
