@@ -21,33 +21,38 @@ The following are the steps I took in order to set up an Elixir cluster on Amazo
 
 ## Preparing Phoenix application
 1. Add `:edeliver` as part of application
-  ```elixir
-  # ./mix.exs
-  def application do
-    [mod: {RumblEc2, []},
-     applications: [:phoenix, :phoenix_pubsub, :phoenix_html,
-                    :cowboy, :logger, :gettext,:phoenix_ecto,
-                    :postgrex, :exrm, :edeliver]] # <---- 1
-  end
-  ```
+
+```elixir
+# ./mix.exs
+def application do
+  [mod: {RumblEc2, []},
+   applications: [:phoenix, :phoenix_pubsub, :phoenix_html,
+                  :cowboy, :logger, :gettext,:phoenix_ecto,
+                  :postgrex, :exrm, :edeliver]] # <---- 1
+end
+```
+
 2. add `{:edeliver, "~> 1.4.0"}`
 3. add `{:exrm, "~> 1.0.3"}`
-  ```elixir
-  # ./mix.exs
-  defp deps do
-    [{:phoenix, "~> 1.2.1"},
-     {:phoenix_pubsub, "~> 1.0"},
-     {:phoenix_ecto, "~> 3.0"},
-     {:postgrex, ">= 0.0.0"},
-     {:phoenix_html, "~> 2.6"},
-     {:phoenix_live_reload, "~> 1.0", only: :dev},
-     {:gettext, "~> 0.11"},
-     {:cowboy, "~> 1.0"},
-     {:edeliver, "~> 1.4.0"}, # <---- 2
-     {:exrm, "~> 1.0.3"}] # <---- 3
-  end
-  ```
+
+```elixir
+# ./mix.exs
+defp deps do
+  [{:phoenix, "~> 1.2.1"},
+   {:phoenix_pubsub, "~> 1.0"},
+   {:phoenix_ecto, "~> 3.0"},
+   {:postgrex, ">= 0.0.0"},
+   {:phoenix_html, "~> 2.6"},
+   {:phoenix_live_reload, "~> 1.0", only: :dev},
+   {:gettext, "~> 0.11"},
+   {:cowboy, "~> 1.0"},
+   {:edeliver, "~> 1.4.0"}, # <---- 2
+   {:exrm, "~> 1.0.3"}] # <---- 3
+end
+```
+
 Once dependencies are include, install dependencies:
+
 ```bash
 # command line
 mix deps.get
@@ -55,6 +60,7 @@ mix deps.get
 
 ## Configuration of config/prod.exs
 We need to configure the production environment
+
 ```elixir
 # config/prod.exs
 
@@ -150,27 +156,28 @@ pre_erlang_clean_compile() {
 ```
 
 Explaining the file a bit by numbered comments:
-1. Naming the app
+
+  1. Naming the app
     - name of the directory on the server containing the application.
-2. Using revision for auto versioning
+  2. Using revision for auto versioning
     - edeliver adds a tag to the version based on the commit that it is based on.
-3. Declare the names of your servers and assign the public DNS
+  3. Declare the names of your servers and assign the public DNS
     - Only one server will be named for now, it is called MAIN.
     - A different naming scheme can be picked.
     - It should point to the public DNS given to the server by Amazon.
       - Using the public DNS solves the issue that occurs when the virtual machine somehow reboots and gets assigned a new private IP, the public IP will remained unchanged.
-4. Specify a user
+  4. Specify a user
     - The user that has SSH and folder access on the declared servers.
     - All servers need to have the same user name.
-5. Specifying the host to build the release on
+  5. Specifying the host to build the release on
     - At the moment there is only one host. Therefore the release will be build and deployed in one host.
-6. Specifying the staging host
+  6. Specifying the staging host
     - No staging host at the moment
-7. Specifying which host(s) the app is going to be deployed to
+  7. Specifying which host(s) the app is going to be deployed to
     - `PRODUCTION_HOSTS` specifies the production hosts. Each host is separated by a space.
-8. Point to the vm.args file
+  8. Point to the vm.args file
     - `LINK_VM_ARGS` specifies the path to the `vm.args` file. The file specifies the flags used to start the Erlang virtual machine.
-9. Prepare the Phoenix app
+  9. Prepare the Phoenix app
     - This function runs a few commands that prepare the Phoenix application. These commands perform tasks such as installing the necessary dependencies, and perform asset compilation.
 
 ## Configuring the Nodes
@@ -178,6 +185,7 @@ I will be updating this part as soon as we have 2 or more hosts. This section wi
 
 ## Creating the secrets production file
 The last file to create is `prod.secret.exs`. The file should look like this:
+
 ```elixir
 use Mix.Config
 
@@ -192,27 +200,31 @@ config :rumbl_ec2, RumblEc2.Repo,
   hostname: "phoenix-ubuntu-testing.cdspfwxmvm1o.us-east-1.rds.amazonaws.com",
   port: 5432
 ```
+
 This file is not committed to into source control, therefore all production specific credential should be added to this file. This file will be `scp` into the server building the release and needs to be located in the home folder. In an ubuntu server with as user called `ubuntu` it should be `/home/ubuntu/`.
 
 ## Configuring Amazon EC2
 The only configuration that needs to be done for the EC2 instance is which ports are open in the Security Groups used by the instances.
 
 Ports for:
+
   - Phoenix: `8080`
   - Erlang Port Mapper Daemon (epmd): `4369`
   - Distributed communication: `9100 - 9155`
 
 Port `8080` was configured in `config.prod.exs`, while the port range of `9100 - 9155` will be specified in `vm.args`.
 
-> The source of each rule added to the security groups need to be specified. The source cannot be `0.0.0.0/0` as this will allow connections to the instances from anywere.
+  > The source of each rule added to the security groups need to be specified. The source cannot be `0.0.0.0/0` as this will allow connections to the instances from anywere.
 
 Once an Amazon EC2 instance has been created, we need to install a few things:
-- `apt-get install -y es-erlang`
-- `apt-get install -y elixir`
-- `apt-get install -y git`
-- `apt-get install haproxy`
+
+  - `apt-get install -y es-erlang`
+  - `apt-get install -y elixir`
+  - `apt-get install -y git`
+  - `apt-get install haproxy`
 
 We will not be needing nodejs, npm or brunch. So we are skipping that step.
-> node is an optional dependency. Phoenix will use brunch.io to compile static assets (js, css, etc), by default. Brunch.io uses the node package manager (npm) to install its dependencies, and npm requires node.js. [Read more](http://www.phoenixframework.org/docs/installation).
+
+  > node is an optional dependency. Phoenix will use brunch.io to compile static assets (js, css, etc), by default. Brunch.io uses the node package manager (npm) to install its dependencies, and npm requires node.js. [Read more](http://www.phoenixframework.org/docs/installation).
 
 Once the above has been installed, we need to make sure that `git` is able to pull from our private repo. We do this by adding a new SSH key to our GitHub account. [Read more](https://help.github.com/articles/adding-a-new-ssh-key-to-your-github-account/#platform-linux)
