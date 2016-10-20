@@ -278,6 +278,8 @@ server {
 }
 ```
 
+Restart nginx with `sudo service nginx restart` to load our new config.
+
 Nginx is set to listen in port 80 with HTTP. Instance will only allow requests from load balancer through security groups. The load balancer in amazon will take care of accepting HTTPS.
 
 
