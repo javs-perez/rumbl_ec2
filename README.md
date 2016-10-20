@@ -20,10 +20,12 @@ The following are the steps I took in order to set up an Elixir cluster on Amazo
     - needs a security group that allows the connection from the EC2 instance
 
 ## Preparing Phoenix application
-1. Add `:edeliver` as part of application
+
+  1. Add `:edeliver` as part of application
 
 ```elixir
 # ./mix.exs
+
 def application do
   [mod: {RumblEc2, []},
    applications: [:phoenix, :phoenix_pubsub, :phoenix_html,
@@ -32,8 +34,8 @@ def application do
 end
 ```
 
-2. add `{:edeliver, "~> 1.4.0"}`
-3. add `{:exrm, "~> 1.0.3"}`
+  2. add `{:edeliver, "~> 1.4.0"}`
+  3. add `{:exrm, "~> 1.0.3"}`
 
 ```elixir
 # ./mix.exs
@@ -55,6 +57,7 @@ Once dependencies are include, install dependencies:
 
 ```bash
 # command line
+
 mix deps.get
 ```
 
@@ -81,6 +84,7 @@ Few things to note here:
 
 ## Configuring Edeliver
 Create a new `.deliver` folder under root directory. In the `.deliver` folder, create a `config` file.
+
 ```
 # .deliver/config
 
@@ -222,9 +226,45 @@ Once an Amazon EC2 instance has been created, we need to install a few things:
   - `apt-get install -y elixir`
   - `apt-get install -y git`
   - `apt-get install haproxy`
+  - ``
 
 We will not be needing nodejs, npm or brunch. So we are skipping that step.
 
   > node is an optional dependency. Phoenix will use brunch.io to compile static assets (js, css, etc), by default. Brunch.io uses the node package manager (npm) to install its dependencies, and npm requires node.js. [Read more](http://www.phoenixframework.org/docs/installation).
 
 Once the above has been installed, we need to make sure that `git` is able to pull from our private repo. We do this by adding a new SSH key to our GitHub account. [Read more](https://help.github.com/articles/adding-a-new-ssh-key-to-your-github-account/#platform-linux)
+
+
+## Setup Nginx
+The file below shows the basic content for `/etc/nginx/sites-available/rumbl_ec2` file. [Read More](http://www.phoenixframework.org/docs/advanced-deployment)
+
+```
+# /etc/nginx/sites-available/rumbl_ec2
+
+upstream rumbl_ec2 {
+  server 127.0.0.1:8080;
+}
+
+map $http_upgrade $connection_upgrade {
+  default upgrade;
+  '' close;
+}
+server {
+  listen 80;
+  server_name ec2-184-72-96-182.compute-1.amazonaws.com;
+
+  location / {
+    try_files $uri @proxy;
+  }
+
+  location @proxy {
+    include proxy_params;
+    proxy_redirect off;
+    proxy_pass http://rumbl_ec2;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection $connection_upgrade;
+  }
+}
+```
+
+Nginx is set to listen in port 80 with HTTP. Instance will only allow requests from load balancer through security groups. The load balancer in amazon will take care of accepting HTTPS.
