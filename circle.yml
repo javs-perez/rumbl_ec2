@@ -1,0 +1,20 @@
+dependencies:
+  pre:
+    - sudo apt-get install python-dev
+    - sudo pip install awsebcli
+    - ./bin-ci-prepare.sh
+  cache_directories:
+    - ~/dependencies
+    - ~/.mix
+    - _build
+    - deps
+
+test:
+  override:
+    - ./bin-ci-test.sh
+
+deployment:
+  staging:
+    branch: master
+    commands:
+      - mix edeliver update production

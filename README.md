@@ -53,7 +53,7 @@ defp deps do
 end
 ```
 
-Once dependencies are include, install dependencies:
+Once dependencies are included, install dependencies:
 
 ```bash
 # command line
@@ -218,19 +218,18 @@ Ports for:
 
 Port `8080` was configured in `config.prod.exs`, while the port range of `9100 - 9155` will be specified in `vm.args`.
 
-  > The source of each rule added to the security groups need to be specified. The source cannot be `0.0.0.0/0` as this will allow connections to the instances from anywere.
+  > The source of each rule added to the security groups needs to be specified. The source cannot be `0.0.0.0/0` as this will allow connections to the instances from anywere.
 
 Once an Amazon EC2 instance has been created, we need to install a few things:
 
   - `apt-get install -y es-erlang`
   - `apt-get install -y elixir`
   - `apt-get install -y git`
-  - `apt-get install haproxy`
-  - ``
+  - `apt-get install nginx`
 
 We will not be needing nodejs, npm or brunch. So we are skipping that step.
 
-  > node is an optional dependency. Phoenix will use brunch.io to compile static assets (js, css, etc), by default. Brunch.io uses the node package manager (npm) to install its dependencies, and npm requires node.js. [Read more](http://www.phoenixframework.org/docs/installation).
+  > Node is an optional dependency. Phoenix will use brunch.io to compile static assets (js, css, etc), by default. Brunch.io uses the node package manager (npm) to install its dependencies, and npm requires node.js. [Read more](http://www.phoenixframework.org/docs/installation).
 
 Once the above has been installed, we need to make sure that `git` is able to pull from our private repo. We do this by adding a new SSH key to our GitHub account. [Read more](https://help.github.com/articles/adding-a-new-ssh-key-to-your-github-account/#platform-linux)
 
