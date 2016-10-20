@@ -222,10 +222,14 @@ Port `8080` was configured in `config.prod.exs`, while the port range of `9100 -
 
 Once an Amazon EC2 instance has been created, we need to install a few things:
 
-  - `apt-get install -y es-erlang`
-  - `apt-get install -y elixir`
-  - `apt-get install -y git`
-  - `apt-get install nginx`
+  - 'sudo apt-get update -y'
+  - 'sudo apt-get upgrade -y'
+  - wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb && sudo dpkg -i erlang-solutions_1.0_all.deb
+  - 'sudo apt-get update -y'
+  - `sudo apt-get install -y es-erlang`
+  - `sudo apt-get install -y elixir`
+  - `sudo apt-get install -y git`
+  - `sudo apt-get install -y nginx`
 
 We will not be needing nodejs, npm or brunch. So we are skipping that step.
 
@@ -235,7 +239,15 @@ Once the above has been installed, we need to make sure that `git` is able to pu
 
 
 ## Setup Nginx
-The file below shows the basic content for `/etc/nginx/sites-available/rumbl_ec2` file, that needs to be put in the EC2 instance. [Read More](http://www.phoenixframework.org/docs/advanced-deployment)
+The file below shows the basic content for `/etc/nginx/sites-available/rumbl_ec2` file, that needs to be put in the EC2 instance. [Read More](http://www.phoenixframework.org/docs/advanced-deployment#section-setting-up-our-web-server)
+
+Let's create our config file for our application. By default, everything in `/etc/nginx/sites-enabled` is included into the main `/etc/nginx/nginx.conf` file that is used to configure nginx's runtime environment. Standard practice is to create our file in `/etc/nginx/sites-available` and make a symbolic link to it in `/etc/nginx/sites-enabled`.
+
+```
+$ sudo touch /etc/nginx/sites-available/hello_phoenix
+$ sudo ln -s /etc/nginx/sites-available/hello_phoenix /etc/nginx/sites-enabled
+$ sudo vi /etc/nginx/sites-available/hello_phoenix
+```
 
 ```
 # /etc/nginx/sites-available/rumbl_ec2
