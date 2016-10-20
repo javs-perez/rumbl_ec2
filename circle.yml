@@ -17,4 +17,4 @@ deployment:
   staging:
     branch: master
     commands:
-      - mix edeliver update production
+      - ./bin-mix-edeliver-update-prod.sh
