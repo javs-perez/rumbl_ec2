@@ -17,4 +17,4 @@ deployment:
   staging:
     branch: master
     commands:
-      - ./bin-mix-edeliver-update-prod.sh
+      - ./bin-ci-edeliver.sh
