@@ -1,7 +1,5 @@
 dependencies:
   pre:
-    - sudo apt-get install python-dev
-    - sudo pip install awsebcli
     - ./bin-ci-prepare.sh
   cache_directories:
     - ~/dependencies

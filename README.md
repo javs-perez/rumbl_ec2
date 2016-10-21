@@ -235,6 +235,12 @@ We will not be needing nodejs, npm or brunch. So we are skipping that step.
 
   > Node is an optional dependency. Phoenix will use brunch.io to compile static assets (js, css, etc), by default. Brunch.io uses the node package manager (npm) to install its dependencies, and npm requires node.js. [Read more](http://www.phoenixframework.org/docs/installation).
 
+As a side note, if you have dependencies like `:comeonin` or `:gettext`, you will need to install a few other packages.
+
+- `sudo apt-get install build-essential`
+- `sudo apt-get install -y erlang-dev`
+- `sudo apt-get install -y erlang-parsetools`
+
 Once the above has been installed, we need to make sure that `git` is able to pull from our private repo. We do this by adding a new SSH key to our GitHub account. [Read more](https://help.github.com/articles/adding-a-new-ssh-key-to-your-github-account/#platform-linux)
 
 
