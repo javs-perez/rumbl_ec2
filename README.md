@@ -9,11 +9,9 @@ The following are the steps I took in order to set up an Elixir cluster on Amazo
 
 ### Prerequisites on Instances
   - Ubuntu 14.04
-  - HA-Proxy 1.4.x
   - Git
+  - Erlang
   - Elixir
-  - node
-  - npm (also install brunch)
 
 ### Prerequisites on DB Instance
   - Postgres DB instance in amazonaws
@@ -85,7 +83,7 @@ Few things to note here:
 ## Configuring Edeliver
 Create a new `.deliver` folder under root directory. In the `.deliver` folder, create a `config` file.
 
-```
+```sh
 # .deliver/config
 
 #1. Name of the app
@@ -143,19 +141,6 @@ pre_erlang_get_and_update_deps() {
       APP='$APP' MIX_ENV='$TARGET_MIX_ENV' $MIX_CMD phoenix.digest $SILENCE
     "
   fi
-}
-
-pre_erlang_clean_compile() {
-  status "Running phoenix.digest" # log output prepended with "----->"
-  __sync_remote " # runs the commands on the build host
-    [ -f ~/.profile ] && source ~/.profile # load profile (optional)
-    set -e # fail if any command fails (recommended)
-    cd '$BUILD_AT' # enter the build directory on the build host (required)
-    # prepare something
-    mkdir -p priv/static # required by the phoenix.digest task
-    # run your custom task
-    APP='$APP' MIX_ENV='$TARGET_MIX_ENV' $MIX_CMD phoenix.digest $SILENCE
-  "
 }
 ```
 
@@ -222,12 +207,11 @@ Port `8080` was configured in `config.prod.exs`, while the port range of `9100 -
 
 Once an Amazon EC2 instance has been created, we need to install a few things:
 
-  - 'sudo apt-get update -y'
-  - 'sudo apt-get upgrade -y'
-  - wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb && sudo dpkg -i erlang-solutions_1.0_all.deb
-  - 'sudo apt-get update -y'
-  - `sudo apt-get install -y es-erlang`
+  - `wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb && sudo dpkg -i erlang-solutions_1.0_all.deb`
+  - `sudo apt-get update -y`
+  - `sudo apt-get install -y esl-erlang`
   - `sudo apt-get install -y elixir`
+  - `sudo apt-get install -y erlang`
   - `sudo apt-get install -y git`
   - `sudo apt-get install -y nginx`
 
@@ -296,9 +280,7 @@ The file below shows the basic content for `circle.yml` file.
 #./circle.yml
 dependencies:
   pre:
-    - sudo apt-get install python-dev
-    - sudo pip install awsebcli
-    - ./bin-ci-prepare.sh
+    - ./bin/ci/prepare.sh
   cache_directories:
     - ~/dependencies
     - ~/.mix
@@ -307,13 +289,17 @@ dependencies:
 
 test:
   override:
-    - ./bin-ci-test.sh
+    - ./bin/ci/test.sh
 
 deployment:
   staging:
     branch: master
     commands:
-      - ./bin-ci-edeliver.sh
+      - ./bin/ci/edeliver-staging.sh
+  production:
+    branch: production
+    commands:
+      - ./bin/ci/edeliver-production.sh
 ```
 
 This file sets ups circle-ci with erlang, elixir and everything else it needs to deploy to all environments.
@@ -321,7 +307,7 @@ This file sets ups circle-ci with erlang, elixir and everything else it needs to
 The following three files are the the scripts been called in `circle.yml`.
 
 ```
-#./bin-ci-prepare.sh
+#./bin/ci/prepare.sh
 #!/bin/bash
 
 set -e
@@ -388,7 +374,7 @@ mix do deps.get, deps.compile, compile
 ```
 
 ```
-#./bin-ci-test.sh
+#./bin/ci/test.sh
 #!/bin/bash
 
 export MIX_ENV="test"
@@ -398,7 +384,7 @@ mix test
 ```
 
 ```
-#./bin-ci-edeliver.sh
+#./bin/ci/edeliver.sh
 #!/bin/bash
 
 export PATH="$HOME/dependencies/erlang/bin:$HOME/dependencies/elixir/bin:$PATH"
