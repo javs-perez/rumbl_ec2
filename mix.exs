@@ -19,7 +19,7 @@ defmodule RumblEc2.Mixfile do
   def application do
     [mod: {RumblEc2, []},
      applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex, :exrm, :edeliver]]
+                    :phoenix_ecto, :postgrex, :comeonin, :exrm, :edeliver]]
   end
 
   # Specifies which paths to compile per environment.
