@@ -1,6 +1,8 @@
 dependencies:
   pre:
     - ./bin-ci-prepare.sh
+    - apt-get install build-essential -y
+    - apt-get install erlang-dev -y
   cache_directories:
     - ~/dependencies
     - ~/.mix
