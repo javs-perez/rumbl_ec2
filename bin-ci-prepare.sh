@@ -57,8 +57,8 @@ if [ ! -e $HOME/.mix/rebar ]; then
   yes Y | LC_ALL=en_GB.UTF-8 mix local.rebar
 fi
 
-apt-get install build-essential -y
-apt-get install erlang-dev -y
+sudo apt-get install build-essential -y
+sudo apt-get install erlang-dev -y
 
 # Fetch and compile dependencies and application code (and include testing tools)
 export MIX_ENV="test"
