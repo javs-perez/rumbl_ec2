@@ -14,6 +14,10 @@ export INSTALL_PATH="$HOME/dependencies"
 export ERLANG_PATH="$INSTALL_PATH/otp_src_$ERLANG_VERSION"
 export ELIXIR_PATH="$INSTALL_PATH/elixir_$ELIXIR_VERSION"
 
+sudo apt-get install -y build-essential
+sudo apt-get install -y erlang-dev
+sudo apt-get install -y erlang-parsetools
+
 mkdir -p $INSTALL_PATH
 cd $INSTALL_PATH
 
@@ -57,8 +61,6 @@ if [ ! -e $HOME/.mix/rebar ]; then
   yes Y | LC_ALL=en_GB.UTF-8 mix local.rebar
 fi
 
-sudo apt-get install build-essential -y
-sudo apt-get install erlang-dev -y
 
 # Fetch and compile dependencies and application code (and include testing tools)
 export MIX_ENV="test"
