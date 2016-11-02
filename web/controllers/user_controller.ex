@@ -23,6 +23,7 @@ defmodule RumblEc2.UserController do
     case Repo.insert(changeset) do
       {:ok, user} ->
         conn
+        |> RumblEc2.Auth.login(user)
         |> put_flash(:info, "#{user.name} created!")
         |> redirect(to: user_path(conn, :index))
       {:error, changeset} ->
