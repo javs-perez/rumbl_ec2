@@ -36,6 +36,7 @@ defmodule RumblEc2.Web do
 
       import RumblEc2.Router.Helpers
       import RumblEc2.Gettext
+      import RumblEc2.Auth, only: [authenticate_user: 2]
     end
   end
 
@@ -58,6 +59,8 @@ defmodule RumblEc2.Web do
   def router do
     quote do
       use Phoenix.Router
+
+      import RumblEc2.Auth, only: [authenticate_user: 2]
     end
   end
 
