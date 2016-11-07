@@ -27,9 +27,4 @@ defmodule RumblEc2.Router do
 
     resources "/videos", VideoController
   end
-
-  # Other scopes may use custom stacks.
-  # scope "/api", RumblEc2 do
-  #   pipe_through :api
-  # end
 end
