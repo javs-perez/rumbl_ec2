@@ -18,8 +18,9 @@ defmodule RumblEc2.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {RumblEc2, []},
-     applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex, :comeonin, :exrm, :edeliver]]
+     applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :ex_machina,
+                    :cowboy, :logger, :gettext, :phoenix_ecto, :postgrex,
+                    :comeonin, :exrm, :edeliver]]
   end
 
   # Specifies which paths to compile per environment.
@@ -41,8 +42,11 @@ defmodule RumblEc2.Mixfile do
      {:exrm, "~> 1.0.3"},
      {:comeonin, "~> 2.0"},
 
-     #dev only dependencies
-     {:phoenix_live_reload, "~> 1.0", only: :dev}]
+     # dev only dependencies
+     {:phoenix_live_reload, "~> 1.0", only: :dev},
+
+     # test only dependencies
+     {:ex_machina, "~> 1.0", only: :test}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.
