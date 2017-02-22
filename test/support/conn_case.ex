@@ -26,7 +26,7 @@ defmodule RumblEc2.ConnCase do
       import Ecto.Query
 
       import RumblEc2.Router.Helpers
-
+      import RumblEc2.TestHelpers
       # The default endpoint for testing
       @endpoint RumblEc2.Endpoint
     end

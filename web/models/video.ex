@@ -6,16 +6,17 @@ defmodule RumblEc2.Video do
     field :title, :string
     field :description, :string
     belongs_to :user, RumblEc2.User
+    belongs_to :category, RumblEc2.Category
 
     timestamps()
   end
 
   @doc """
-  Builds a changeset based on the `struct` and `params`.
+  Builds a changeset based on the `model` and `params`.
   """
-  def changeset(struct, params \\ %{}) do
-    struct
+  def changeset(model, params \\ %{}) do
+    model
     |> cast(params, [:url, :title, :description])
-    |> validate_required([:url, :title, :description])
+    |> assoc_constraint(:category)
   end
 end
